@@ -23,7 +23,7 @@ export default function Home() {
       {(
         <>
           <input
-            placeholder="Input your private key (0x...) or connect wallet & leave blank "
+            placeholder="Input your private key (0x...)"
             className="mt-8 p-4 input input-bordered input-primary w-full"
             onChange={handle_pk_change}
           />
