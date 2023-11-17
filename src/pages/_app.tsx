@@ -12,6 +12,7 @@ import {
   AptosWalletAdapter,
 } from "@manahippo/aptos-wallet-adapter";
 import { ModalContext, ModalState } from "../components/ModalContext";
+import { Toaster } from "react-hot-toast";
 function WalletSelector({ Component, pageProps }: AppProps) {
   const [modalState, setModalState] = useState<ModalState>({
     walletModal: false,
@@ -41,6 +42,7 @@ function WalletSelector({ Component, pageProps }: AppProps) {
         <div className="px-8">
           <NavBar />
           <Component {...pageProps} className="bg-base-300" />
+          <Toaster />
         </div>
       </ModalContext.Provider>
     </WalletProvider>
