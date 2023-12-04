@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import "../styles/loading.css";
-import "../styles/select-input.css";
 import { NavBar } from "../components/NavBar";
 import type { AppProps } from "next/app";
 import { useMemo, useState } from "react";
@@ -36,7 +35,7 @@ function WalletSelector({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <WalletProvider wallets={wallets} autoConnect={false}>
+    <WalletProvider wallets={wallets} autoConnect={true}>
       <ModalContext.Provider value={modals}>
         <div className="px-8">
           <NavBar />
