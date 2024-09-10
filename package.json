@@ -25,7 +25,8 @@
     "nft.storage": "^7.0.0",
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "react-select": "^5.7.0"
+    "react-select": "^5.7.0",
+    "vercel": "^37.4.0"
   },
   "devDependencies": {
     "@types/node": "17.0.35",

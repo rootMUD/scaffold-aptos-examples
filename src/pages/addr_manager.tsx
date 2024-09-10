@@ -21,10 +21,12 @@ import Select from 'react-select';
 // import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
 export default function Home() {
   const options = [
+    { value: 'all', label: 'all' },
     { value: 'ethereum', label: 'ethereum' },
-    { value: 'polygon', label: 'polygon' },
+    { value: 'optimism', label: 'optimism' },
   ];
-  const [selectedOption, setSelectedOption] = useState(null);
+
+  const [selectedOption, setSelectedOption] = useState({ value: 'all', label: 'all' });
 
   const { account, signAndSubmitTransaction } = useWallet();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
@@ -47,7 +49,7 @@ export default function Home() {
     addr: "",
     pubkey: "",
     addr_description: "",
-    chains: [],
+    chains: ["all"],
   });
 
   async function init_did() {
@@ -148,6 +150,8 @@ export default function Home() {
         pubkey,
         chains,
         addr_description,
+        "",
+        0,
       ],
     };
   }
