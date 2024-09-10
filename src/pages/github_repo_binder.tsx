@@ -273,7 +273,7 @@ export default function Home() {
           <button onClick={init_did} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
             Init Your DID
           </button>{' '}
-          &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Aptos before the other Operations!
+          &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Movement before the other Operations!
           <br></br>
           <button
             onClick={get_services}

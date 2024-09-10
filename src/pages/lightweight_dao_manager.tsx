@@ -420,7 +420,7 @@ export default function Home() {
           >
             Init Your DID
           </button>{" "}
-          &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Aptos before the other
+          &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Movement before the other
           Operations!
           <br></br>
           <center>
