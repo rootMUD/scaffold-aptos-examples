@@ -10,8 +10,8 @@ import {
   AptosWalletAdapter,
 } from "@manahippo/aptos-wallet-adapter";
 
-import { useAptosWallet } from '@razorlabs/wallet-kit';
-import '@razorlabs/wallet-kit/style.css';
+// import { useAptosWallet } from '@razorlabs/wallet-kit';
+// import '@razorlabs/wallet-kit/style.css';
 import { ModalContext, ModalState } from "../components/ModalContext";
 function WalletSelector({ Component, pageProps }: AppProps) {
   const [modalState, setModalState] = useState<ModalState>({

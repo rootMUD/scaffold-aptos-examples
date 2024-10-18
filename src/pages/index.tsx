@@ -13,7 +13,7 @@ import {
   WalletClient,
   HexString,
 } from "@martiandao/aptos-web3-bip44.js";
-import Image from 'next/image';
+import Image from "next/image";
 
 // import { CodeBlock } from "../components/CodeBlock";
 
@@ -41,11 +41,11 @@ export default function Home() {
     expired_at: 0,
   });
 
-  const [randomColor, setRandomColor] = useState<string>('red');
-  const [randomIcon, setRandomIcon] = useState<string>('/random_icon_0.png');
+  const [randomColor, setRandomColor] = useState<string>("red");
+  const [randomIcon, setRandomIcon] = useState<string>("/random_icon_0.png");
 
   useEffect(() => {
-    const colors = ['red', 'lightblue', 'orange', 'green', 'blackf'];
+    const colors = ["red", "lightblue", "orange", "green", "blackf"];
     const randomIndex = Math.floor(Math.random() * colors.length);
     setRandomColor(colors[randomIndex]);
 
@@ -328,182 +328,187 @@ export default function Home() {
     updateFormInput({ ...loadInput });
   };
   return (
-    <div>
-      <center>
-        <p>
-          <b>Module Path: </b>
-          <a target="_blank" href={MODULE_URL} className="underline">
-            {DAPP_ADDRESS}::service_aggregator
-          </a>
-        </p>
-        <br></br>
-        <div className="flex items-center justify-center">
-          <h2 className="text-2xl font-bold mb-4" style={{ color: randomColor }}>
-            Generate the Profile for you on the Movement!
-          </h2>
-          &nbsp;&nbsp;&nbsp;<Image src={randomIcon} alt="Random Icon" width={32} height={32} className="ml-2" />
-        </div>
-        {!hasAddrAggregator && (
-          <>
-            <input
-              placeholder="Description for your DID"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                setAddAddrInput({
-                  ...addAddrInput,
-                  description: e.target.value,
-                })
-              }
-            />
-            <br></br>
-            <br></br>
-            The type of DID Owner: &nbsp; &nbsp; &nbsp; &nbsp;
-            <select
-              value={addAddrInput.did_type}
-              onChange={(e) => {
-                setAddAddrInput({
-                  ...addAddrInput,
-                  did_type: parseInt(e.target.value),
-                });
-              }}
-            >
-              <option value="0">Individual</option>
-              <option value="1">DAO</option>
-              <option value="2">Bot</option>
-              <option value="3">Repo</option>
-            </select>
-            <br></br>
-            <button
-              onClick={init_did}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Init Your DID
-            </button>{" "}
-            &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Movement before the
-            other Operations!
-            <br></br>
-            <button
-              onClick={get_services}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Refresh the Services Info
-            </button>
-            <br></br>
-          </>
-        )}
-        {hasAddrAggregator && (
-          <>
-            <button
-              onClick={get_services}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Refresh the Services Info
-            </button>
+    <div className="flex flex-col items-center">
+      <p>
+        <b>Module Path: </b>
+        <a target="_blank" href={MODULE_URL} className="underline">
+          {DAPP_ADDRESS}::service_aggregator
+        </a>
+      </p>
+      <br></br>
+      <div className="flex items-center justify-center">
+        <h2 className="text-2xl font-bold mb-4" style={{ color: randomColor }}>
+          Generate the Profile for you on the Movement!
+        </h2>
+        &nbsp;&nbsp;&nbsp;
+        <Image
+          src={randomIcon}
+          alt="Random Icon"
+          width={32}
+          height={32}
+          className="ml-2"
+        />
+      </div>
+      {!hasAddrAggregator && (
+        <>
+          <input
+            placeholder="Description for your DID"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              setAddAddrInput({
+                ...addAddrInput,
+                description: e.target.value,
+              })
+            }
+          />
+          <br></br>
+          <br></br>
+          The type of DID Owner: &nbsp; &nbsp; &nbsp; &nbsp;
+          <select
+            value={addAddrInput.did_type}
+            onChange={(e) => {
+              setAddAddrInput({
+                ...addAddrInput,
+                did_type: parseInt(e.target.value),
+              });
+            }}
+          >
+            <option value="0">Individual</option>
+            <option value="1">DAO</option>
+            <option value="2">Bot</option>
+            <option value="3">Repo</option>
+          </select>
+          <br></br>
+          <button
+            onClick={init_did}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Init Your DID
+          </button>{" "}
+          &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Movement before the
+          other Operations!
+          <br></br>
+          <button
+            onClick={get_services}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Refresh the Services Info
+          </button>
+          <br></br>
+        </>
+      )}
+      {hasAddrAggregator && (
+        <>
+          <button
+            onClick={get_services}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Refresh the Services Info
+          </button>
 
-            <div className="overflow-x-auto mt-2">
-              {services.length > 0 && (
-                <>
-                  <h3 className="text-center font-bold">Services</h3>
-                  <div>{render_services_table()}</div>
-                </>
-              )}
-            </div>
-            <br></br>
-            <input
-              placeholder="service Name"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({ ...formInput, name: e.target.value })
-              }
-              value={formInput.name}
-            />
-            <br></br>
-            <input
-              placeholder="service Description"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({ ...formInput, description: e.target.value })
-              }
-              value={formInput.description}
-            />
-            <br></br>
-            <input
-              placeholder="service URL"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({ ...formInput, url: e.target.value })
-              }
-              value={formInput.url}
-            />
-            <br></br>
-            <input
-              placeholder="service Verification URL(Optional)"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({
-                  ...formInput,
-                  verification_url: e.target.value,
-                })
-              }
-              value={formInput.verification_url}
-            />
-            <br></br>
-            <input
-              // placeholder="service Verification URL(Optional)"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({
-                  ...formInput,
-                  expired_at: parseInt(e.target.value),
-                })
-              }
-              placeholder="33229411200"
-              value={formInput.expired_at}
-            />
-            <br></br>
-            <button
-              onClick={add_service}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Add Service
-            </button>
-            <br></br>
-            <button
-              onClick={update_service}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Update Service
-            </button>
-            <br></br>
-            <input
-              placeholder="service Name"
-              className="mt-8 p-4 input input-bordered input-primary w-full"
-              onChange={(e) =>
-                updateFormInput({ ...formInput, name: e.target.value })
-              }
-            />
-            <br></br>
-            <button
-              onClick={delete_service}
-              className={
-                "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-              }
-            >
-              Delete Service
-            </button>
-          </>
-        )}
-      </center>
+          <div className="overflow-x-auto mt-2">
+            {services.length > 0 && (
+              <>
+                <h3 className="text-center font-bold">Services</h3>
+                <div>{render_services_table()}</div>
+              </>
+            )}
+          </div>
+          <br></br>
+          <input
+            placeholder="service Name"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({ ...formInput, name: e.target.value })
+            }
+            value={formInput.name}
+          />
+          <br></br>
+          <input
+            placeholder="service Description"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({ ...formInput, description: e.target.value })
+            }
+            value={formInput.description}
+          />
+          <br></br>
+          <input
+            placeholder="service URL"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({ ...formInput, url: e.target.value })
+            }
+            value={formInput.url}
+          />
+          <br></br>
+          <input
+            placeholder="service Verification URL(Optional)"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({
+                ...formInput,
+                verification_url: e.target.value,
+              })
+            }
+            value={formInput.verification_url}
+          />
+          <br></br>
+          <input
+            // placeholder="service Verification URL(Optional)"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({
+                ...formInput,
+                expired_at: parseInt(e.target.value),
+              })
+            }
+            placeholder="33229411200"
+            value={formInput.expired_at}
+          />
+          <br></br>
+          <button
+            onClick={add_service}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Add Service
+          </button>
+          <br></br>
+          <button
+            onClick={update_service}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Update Service
+          </button>
+          <br></br>
+          <input
+            placeholder="service Name"
+            className="mt-8 p-4 input input-bordered input-primary w-full"
+            onChange={(e) =>
+              updateFormInput({ ...formInput, name: e.target.value })
+            }
+          />
+          <br></br>
+          <button
+            onClick={delete_service}
+            className={
+              "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+            }
+          >
+            Delete Service
+          </button>
+        </>
+      )}
     </div>
   );
 }
