@@ -4,6 +4,7 @@ import { MoveResource } from '@martiandao/aptos-web3-bip44.js/dist/generated';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { AptosAccount, WalletClient, HexString } from '@martiandao/aptos-web3-bip44.js';
+import Image from 'next/image';
 
 // import { CodeBlock } from "../components/CodeBlock";
 
@@ -18,17 +19,29 @@ export default function Home() {
   // const [resource, setResource] = React.useState<MoveResource>();
   const [formInput, updateFormInput] = useState<{
     name: string;
-    url: string;
+    github_acct: string;
     description: string;
-    verification_url: string;
+    gist_id: string;
     expired_at: number;
   }>({
-    name: '',
-    url: '',
-    description: '',
-    verification_url: '',
+    name: 'github',
+    github_acct: '',
+    description: 'my github account.',
+    gist_id: '',
     expired_at: 0,
   });
+
+  const [randomColor, setRandomColor] = useState<string>('red');
+  const [randomIcon, setRandomIcon] = useState<string>('/random_icon_0.png');
+
+  useEffect(() => {
+    const colors = ['red', 'lightblue', 'orange', 'green', 'blackf'];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    setRandomColor(colors[randomIndex]);
+
+    const iconIndex = Math.floor(Math.random() * 5); // 0 to 4
+    setRandomIcon(`/random_icon_${iconIndex}.png`);
+  }, []);
 
   async function add_service() {
     await signAndSubmitTransaction(do_add_service(), { gas_unit_price: 100 }).then(() => {
@@ -38,12 +51,14 @@ export default function Home() {
   }
 
   function do_add_service() {
-    const { name, description, url, verification_url, expired_at } = formInput;
+    const { name, description, github_acct, gist_id, expired_at } = formInput;
+    let github_url = "https://github.com/" + github_acct;
+    let gist_url = "https://gist.github.com/" + github_acct + "/" + gist_id;
     return {
       type: 'entry_function_payload',
       function: DAPP_ADDRESS + '::service_aggregator::add_service',
       type_arguments: [],
-      arguments: [name, description, url, verification_url, "", expired_at],
+      arguments: [name, description, github_url, gist_url, "", expired_at],
     };
   }
 
@@ -55,12 +70,14 @@ export default function Home() {
   }
 
   function do_update_service() {
-    const { name, description, url, verification_url, expired_at } = formInput;
+    const { name, description, github_acct, gist_id, expired_at } = formInput;
+    let github_url = "https://github.com/" + github_acct;
+    let gist_url = "https://gist.github.com/" + github_acct + "/" + gist_id;
     return {
       type: 'entry_function_payload',
       function: DAPP_ADDRESS + '::service_aggregator::update_service',
       type_arguments: [],
-      arguments: [name, description, url, verification_url, "", expired_at],
+      arguments: [name, description, github_url, gist_url, "", expired_at],
     };
   }
 
@@ -86,44 +103,6 @@ export default function Home() {
   //   console.log(account!.address!.toString());
   // }
 
-  // function init_service_aggr() {
-  //   return {
-  //     type: "entry_function_payload",
-  //     function: DAPP_ADDRESS + "::service_aggregator::create_service_aggregator",
-  //     type_arguments: [],
-  //     arguments: [
-  //     ],
-  //   };
-  // }
-
-  // const render_services = () => {
-  //   let context_table = [];
-  //   for (let i = 0; i < services.length; i++) {
-  //     console.log(services[i]);
-  //     context_table.push(
-  //       <tr className="text-center" key={i}>
-  //         <th>{services[i].name}</th>
-  //         <td>{services[i].description}</td>
-  //         <td>
-  //           <a href={services[i].url} target="_blank" rel="noreferrer">
-  //             <p className="underline">{services[i].url} </p>
-  //           </a>
-  //         </td>
-  //         <td>
-  //           <a href={services[i].verification_url} target="_blank" rel="noreferrer">
-  //             <p className="underline">{services[i].verification_url} </p>
-  //           </a>
-  //         </td>
-  //         <td>{services[i].expired_at}</td>
-  //         <td>
-  //           <button className="btn btn-blue">LOAD</button>
-  //         </td>
-  //         {/* TODO: a btn to load data to the params in below input table */}
-  //       </tr>
-  //     );
-  //   }
-  //   return context_table;
-  // };
   async function check_service_aggregator() {
     if (account && account.address) {
       try {
@@ -270,22 +249,35 @@ export default function Home() {
   };
   const load_service = (service: any) => {
     const { name, description, url, verification_url, expired_at } = service;
-    const loadInput = { name, description, url, verification_url, expired_at };
+    let arr_url = url.split("/");
+    let github_acct = arr_url[arr_url.length - 1];
+    let arr_verification_url = verification_url.split("/");
+    let gist_id = arr_verification_url[arr_verification_url.length - 1];
+    const loadInput = { name, description, github_acct, gist_id, expired_at };
     updateFormInput({ ...loadInput });
   };
   return (
     <div>
+      <center>
       <p>
         <b>Module Path: </b>
         <a target="_blank" href={MODULE_URL} className="underline">
-          {DAPP_ADDRESS}::service_aggregator
+          {DAPP_ADDRESS}::address_aggregator
         </a>
       </p>
+      <br></br>
+      <div className="flex items-center justify-center">
+        <h2 className="text-2xl font-bold mb-4" style={{ color: randomColor }}>
+          Generate the Profile for you on the Movement!
+        </h2>
+        &nbsp;&nbsp;&nbsp;<Image src={randomIcon} alt="Random Icon" width={32} height={32} className="ml-2" />
+      </div>
+
       {!hasAddrAggregator && (
         <>
           <input
             placeholder="Description for your DID"
-            className="mt-8 p-4 input input-bordered input-primary w-full"
+            className="mt-8 p-4 input input-bordered input-primary w-1/2"
             onChange={(e) => setAddAddrInput({ ...addAddrInput, description: e.target.value })}
           />
           <br></br>
@@ -326,71 +318,105 @@ export default function Home() {
             }>
             Refresh the Services Info
           </button>
+          <div className="overflow-x-auto mt-2">
+            {services.length > 0 && (
+              <>
+                <h3 className="text-center font-bold">Services</h3>
+                <div>{render_services_table()}</div>
+              </>
+            )}
+          <br></br>
+          </div>
 
-        <div className="overflow-x-auto mt-2">
-          {services.length > 0 && (
-            <>
-              <h3 className="text-center font-bold">Services</h3>
-              <div>{render_services_table()}</div>
-            </>
-          )}
+
+
+        <input
+          placeholder="service Name"
+          className="mt-8 p-4 input input-bordered input-primary w-1/4"
+          onChange={(e) => updateFormInput({ ...formInput, name: e.target.value })}
+          value={formInput.name}
+        />
+        <br></br>
+        <input
+          placeholder="service Description"
+          className="mt-8 p-4 input input-bordered input-primary w-1/4"
+          onChange={(e) => updateFormInput({ ...formInput, description: e.target.value })}
+          value={formInput.description}
+        />
+        <br></br>
+        <br></br>
+        <br></br>
+
+        <div className="inline-flex relative mr-3 formkit-field">
+          <p>https://github.com/</p>
+          <input
+            placeholder="github account"
+            className="p-4 input input-bordered input-primary ml-2"
+            onChange={(e) => updateFormInput({ ...formInput, github_acct: e.target.value })}
+            value={formInput.github_acct}
+          />
         </div>
-      <br></br>
-      <input
-        placeholder="service Name"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, name: e.target.value })}
-        value={formInput.name}
-      />
-      <br></br>
-      <input
-        placeholder="service Description"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, description: e.target.value })}
-        value={formInput.description}
-      />
-      <br></br>
-      <input
-        placeholder="service URL"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, url: e.target.value })}
-        value={formInput.url}
-      />
-      <br></br>
-      <input
-        placeholder="service Verification URL(Optional)"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, verification_url: e.target.value })}
-        value={formInput.verification_url}
-      />
-      <br></br>
-      <input
-        // placeholder="service Verification URL(Optional)"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, expired_at: parseInt(e.target.value) })}
-        placeholder="33229411200"
-        value={formInput.expired_at}
-      />
-      <br></br>
-      <button onClick={add_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
-        Add Service
-      </button>
-      <br></br>
-      <button onClick={update_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
-        Update Service
-      </button>
-      <br></br>
-      <input
-        placeholder="service Name"
-        className="mt-8 p-4 input input-bordered input-primary w-full"
-        onChange={(e) => updateFormInput({ ...formInput, name: e.target.value })}
-      />
-      <br></br>
-      <button onClick={delete_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
-        Delete Service
-      </button>
-      </>
+        <br></br>
+        <br></br>
+        <div className="inline-flex relative mr-3 formkit-field">
+          <a href="https://docs.movedid.build/guides-for-the-scenarios-of-move-did/bind-github-and-movedid/" target="_blank">
+            <p className="underline">💡 How can I create a gist to verify my github acct?</p>
+          </a>
+        </div>
+        <br></br>
+
+        <div className="inline-flex relative mr-3 formkit-field">
+          <a href="https://gist.github.com" target="_blank">
+            <button className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
+              Create a gist!
+            </button>
+          </a>
+        </div>
+        <br></br>
+        <br></br>
+        <div className="inline-flex relative mr-3 formkit-field w-1/4">
+          <p>https://gist.github.com/{formInput.github_acct}/</p>
+        <input
+          placeholder="gist Verification URL"
+          className="p-4 input input-bordered input-primary w-full ml-2"
+          onChange={(e) => updateFormInput({ ...formInput, gist_id: e.target.value })}
+          value={formInput.gist_id}
+        />
+        </div>
+        <br></br>
+        <br></br>
+        <div className="inline-flex relative mr-3 formkit-field">
+          <p>0 means never expire: </p>
+        <input
+          className="p-4 input input-bordered input-primary ml-2"
+          onChange={(e) => updateFormInput({ ...formInput, expired_at: parseInt(e.target.value) })}
+          placeholder="0"
+          value={formInput.expired_at}
+        />
+        </div>
+
+        <br></br>
+        <button onClick={add_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
+          Add Service
+        </button>
+        <br></br>
+        <button onClick={update_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
+          Update Service
+        </button>
+        <br></br>
+        <input
+          placeholder="service Name"
+          className="mt-8 p-4 input input-bordered input-primary w-1/4"
+          onChange={(e) => updateFormInput({ ...formInput, name: e.target.value })}
+          value={formInput.name}
+        />
+        <br></br>
+        <button onClick={delete_service} className={'btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg'}>
+          Delete Service
+        </button>
+        </>
       )}
+      </center>
     </div>
   );
 }

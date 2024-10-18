@@ -5,12 +5,13 @@ import { NavBar } from "../components/NavBar";
 import type { AppProps } from "next/app";
 import { useMemo, useState } from "react";
 import {
-  FewchaWalletAdapter,
   PontemWalletAdapter,
-  MartianWalletAdapter,
   WalletProvider,
   AptosWalletAdapter,
 } from "@manahippo/aptos-wallet-adapter";
+
+import { useAptosWallet } from '@razorlabs/wallet-kit';
+import '@razorlabs/wallet-kit/style.css';
 import { ModalContext, ModalState } from "../components/ModalContext";
 function WalletSelector({ Component, pageProps }: AppProps) {
   const [modalState, setModalState] = useState<ModalState>({
@@ -19,9 +20,7 @@ function WalletSelector({ Component, pageProps }: AppProps) {
   const wallets = useMemo(
     () => [
       new AptosWalletAdapter(),
-      new MartianWalletAdapter(),
       new PontemWalletAdapter(),
-      new FewchaWalletAdapter(),
     ],
     []
   );
