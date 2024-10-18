@@ -434,6 +434,7 @@ export default function Home() {
       )}
 
       {hasAddrAggregator && (
+        <>
           <button
             onClick={get_addr_info}
             className={
@@ -442,7 +443,8 @@ export default function Home() {
           >
             Refresh DID Resources
           </button>
-          <br></br>
+          <br />
+        </>
       )}
       {/* Need the description here. */}
       {hasAddrAggregator && addrInfo && (

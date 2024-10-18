@@ -173,7 +173,6 @@ export default function Home() {
         <div className=" p-4 w-[60%] m-auto flex flex-col shadow-2xl opacity-80 mb-10 justify-center ">
             { (account  && account.address) && (
                 <div className="overflow-x-auto mt-2">
-                <center>
                     <h3><b>Events Owner:</b> 
                         <a href={"https://explorer.aptoslabs.com/account/" + account.address + "?network=" + NETWORK} target="_blank" rel="noreferrer">
                             <p className="underline">
@@ -181,7 +180,6 @@ export default function Home() {
                             </p>
                         </a>
                     </h3>
-                </center>
                 <br></br>
                 <br></br>
                 </div>
