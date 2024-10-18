@@ -379,15 +379,13 @@ export default function Home() {
   // useEffect(() => {console.log("has account:" + account)}, [account])
 
   return (
-    <div>
-      <center>
+    <div className="flex flex-col items-center">
         <p>
           <b>Module Path:</b>
           <a target="_blank" href={MODULE_URL} className="underline">
             {DAPP_ADDRESS}::addr_aggregator
           </a>
         </p>
-      </center>
       {!hasAddrAggregator && (
         <>
           <input
@@ -423,7 +421,6 @@ export default function Home() {
           &nbsp; &nbsp; &nbsp; &nbsp; 💡 INIT Your DID on Movement before the other
           Operations!
           <br></br>
-          <center>
             <button
               onClick={get_addr_info}
               className={
@@ -432,13 +429,11 @@ export default function Home() {
             >
               Refresh DID Resources
             </button>
-          </center>
           <br></br>
         </>
       )}
 
       {hasAddrAggregator && (
-        <center>
           <button
             onClick={get_addr_info}
             className={
@@ -448,7 +443,6 @@ export default function Home() {
             Refresh DID Resources
           </button>
           <br></br>
-        </center>
       )}
       {/* Need the description here. */}
       {hasAddrAggregator && addrInfo && (
@@ -456,27 +450,21 @@ export default function Home() {
           <hr></hr>
           <br></br>
           {/* todo: make it diff of h1 - h5 */}
-          <center>
             <article className="prose lg:prose-xl">
               <h2 className="text-center">DID Basic Information</h2>
             </article>
-          </center>
-          <center>
             <p>
               <b>DID Type: </b> {typeInfo === "0" ? "Human" : "DAO"}
             </p>
             <p>
               <b>DID Description: </b> {descriptionInfo}
             </p>
-          </center>
           <br></br>
           <hr></hr>
           <br></br>
-          <center>
             <article className="prose lg:prose-xl">
               <h2 className="prose text-center">Addr Aggreagator</h2>
             </article>
-          </center>
 
           <table className="table table-compact w-full my-2">
             <thead>
