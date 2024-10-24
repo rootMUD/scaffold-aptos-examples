@@ -5,16 +5,18 @@
 //     // useOnBlock,
 //     useUserProviderAndSigner,
 //   } from "eth-hooks";
-import { AptosWalletAdapter } from "@manahippo/aptos-wallet-adapter";
-import { ethers } from "ethers";
+// import { AptosWalletAdapter } from "@manahippo/aptos-wallet-adapter";
+// import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
-import { DAPP_ADDRESS } from "../config/constants";
+// import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import { useAptosWallet } from '@razorlabs/wallet-kit';
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
+
 import { WalletClient } from "@martiandao/aptos-web3-bip44.js";
 import {
   APTOS_NODE_URL,
   APTOS_FAUCET_URL,
-  ETH_SIGNER_URL,
+  DAPP_ADDRESS,
   APTOS_SIGNER_URL,
 } from "../config/constants";
 
@@ -33,8 +35,9 @@ export default function VerifyEthAddrBtn({
   verified,
   get_addr_info,
 }: props) {
-  const [currentAccount, setCurrentAccount] = useState<string>();
-  const { account, signAndSubmitTransaction } = useWallet();
+  // const [currentAccount, setCurrentAccount] = useState<string>();
+  // const { account, signAndSubmitTransaction } = useWallet();
+  const { signAndSubmitTransaction } = useAptosWallet();
   const [msg, setMsg] = useState<string>();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   const [signature, setSignature] = useState<string>("");
@@ -54,16 +57,17 @@ export default function VerifyEthAddrBtn({
     console.log("update_aptos_addr::msg" + msg);
     const payload = {
       type: "entry_function_payload",
-      function: DAPP_ADDRESS + "::addr_aggregator::update_aptos_addr",
-      type_arguments: [],
-      arguments: [
+      function: `${DAPP_ADDRESS  }::addr_aggregator::update_aptos_addr`,
+      typeArguments: [],
+      functionArguments: [
         address,
         signature,
-        "APTOS\nmessage: " + msg + "\nnonce: random_string_may_change_as_nonce",
+        `APTOS\nmessage: ${  msg  }\nnonce: random_string_may_change_as_nonce`,
       ],
     };
-    const txn = await signAndSubmitTransaction(payload, {
-      gas_unit_price: 100,
+    const txn = await signAndSubmitTransaction({
+      gasUnitPrice: 100,
+      payload: payload as InputGenerateTransactionPayloadData,
     });
     console.log(txn);
     get_addr_info();
@@ -78,10 +82,8 @@ export default function VerifyEthAddrBtn({
           <>
             <td>
               <button
-                className={
-                  "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-                }
-                disabled={true}
+                className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
+                disabled
               >
                 No Action Available
               </button>
@@ -102,9 +104,7 @@ export default function VerifyEthAddrBtn({
             <>
               <td>
                 <button
-                  className={
-                    "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-                  }
+                  className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
                   onClick={update_aptos_addr}
                 >
                   Verify APT Signature
@@ -125,11 +125,9 @@ export default function VerifyEthAddrBtn({
             <>
               <td>
                 <button
-                  className={
-                    "btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
-                  }
+                  className="btn btn-primary font-bold mt-4  text-white rounded p-4 shadow-lg"
                 >
-                  <a href={APTOS_SIGNER_URL + msg} target="_blank">
+                  <a href={APTOS_SIGNER_URL + msg} target="_blank" rel="noreferrer">
                     Generate APT Signature
                   </a>
                 </button>

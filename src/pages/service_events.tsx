@@ -4,13 +4,14 @@ import {
     APTOS_NODE_URL,
     NETWORK
   } from "../config/constants";
-import { useWallet } from '@manahippo/aptos-wallet-adapter';
+// import { useWallet } from '@manahippo/aptos-wallet-adapter';
+import { useAptosWallet } from '@razorlabs/wallet-kit';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { AptosAccount, AptosClient, BCS, HexString } from 'aptos';
 
 export default function Home() {
-    const { account, signAndSubmitTransaction } = useWallet();
+    const { account, signAndSubmitTransaction } = useAptosWallet();
 
     const [addServiceEvents, setAddServiceEvents] = useState<
         Array<{

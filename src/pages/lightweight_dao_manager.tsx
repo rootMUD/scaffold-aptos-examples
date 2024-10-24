@@ -4,7 +4,8 @@ import {
   APTOS_NODE_URL,
   MODULE_URL,
 } from "../config/constants";
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
+// import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import { useAptosWallet } from '@razorlabs/wallet-kit';
 import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
 import { useState, useEffect } from "react";
 import {
@@ -23,6 +24,7 @@ import CreatableSelect from "react-select/creatable";
 
 import VerifyEthAddrBtn from "../components/VerifyEthAddrBtn";
 import VerifyAptosAddrBtn from "../components/VerifyAptAddrBtn";
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
 
 // import { TypeTagVector } from "@martiandao/aptos-web3-bip44.js/dist/aptos_types";
 // import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
@@ -30,7 +32,7 @@ import VerifyAptosAddrBtn from "../components/VerifyAptAddrBtn";
 // TODO: downcase the tags input
 
 export default function Home() {
-  const { account, signAndSubmitTransaction, connected } = useWallet();
+  const { account, signAndSubmitTransaction } = useAptosWallet();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   // const [resource, setResource] = React.useState<MoveResource>();
   // const [resource_v2, setResourceV2] = React.useState<any>();
@@ -122,13 +124,17 @@ export default function Home() {
   };
 
   async function init_did() {
-    await signAndSubmitTransaction(do_init_did(), { gas_unit_price: 100 });
+    await signAndSubmitTransaction({
+      payload: do_init_did() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
+    });
     check_addr_aggregator();
   }
 
   async function add_addr() {
-    const test = await signAndSubmitTransaction(do_add_addr(), {
-      gas_unit_price: 100,
+    const test = await signAndSubmitTransaction({
+      payload: do_add_addr() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
     });
     console.log(test);
     get_addr_info(); // refresh after address added
@@ -145,16 +151,17 @@ export default function Home() {
       const verified = addrInfo[addrIndex].signature !== "0x";
       if (verified) {
         console.log("will update verified address");
-        const txn = await signAndSubmitTransaction(do_update_addr_verified(), {
-          gas_unit_price: 100,
+        const txn = await signAndSubmitTransaction({
+          payload: do_update_addr_verified() as InputGenerateTransactionPayloadData,
+          gasUnitPrice: 100,
         });
         console.log(txn);
       } else {
         console.log("will update non verified address");
-        const txn = await signAndSubmitTransaction(
-          do_update_addr_not_verified(),
-          { gas_unit_price: 100 }
-        );
+        const txn = await signAndSubmitTransaction({
+          payload: do_update_addr_not_verified() as InputGenerateTransactionPayloadData,
+          gasUnitPrice: 100,
+        });
         console.log(txn);
       }
       get_addr_info(); // refresh addr info after update
@@ -164,8 +171,9 @@ export default function Home() {
   }
 
   async function delete_addr(address: string) {
-    const txn = await signAndSubmitTransaction(do_delete_addr(address), {
-      gas_unit_price: 100,
+    const txn = await signAndSubmitTransaction({
+      payload: do_delete_addr(address) as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
     });
     console.log(txn);
     get_addr_info(); // refresh addr info after update
@@ -228,8 +236,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::init::init",
-      type_arguments: [],
-      arguments: [addr_type, description],
+      typeArguments: [],
+      functionArguments: [addr_type, description],
     };
   }
 
@@ -247,8 +255,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::addr_aggregator::add_addr",
-      type_arguments: [],
-      arguments: [
+      typeArguments: [],
+      functionArguments: [
         addr_type,
         addr,
         "", // pubkey
@@ -267,8 +275,8 @@ export default function Home() {
       function:
         DAPP_ADDRESS +
         "::addr_aggregator::update_addr_info_with_chains_and_description_and_expired_at",
-      type_arguments: [],
-      arguments: [addr, chains, addr_description, 0],
+      typeArguments: [],
+      functionArguments: [addr, chains, addr_description, 0],
     };
   }
 
@@ -279,8 +287,8 @@ export default function Home() {
       function:
         DAPP_ADDRESS +
         "::addr_aggregator::update_addr_info_for_non_verification",
-      type_arguments: [],
-      arguments: [addr, chains, addr_description],
+      typeArguments: [],
+      functionArguments: [addr, chains, addr_description],
     };
   }
 
@@ -289,8 +297,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::addr_aggregator::delete_addr",
-      type_arguments: [],
-      arguments: [address],
+      typeArguments: [],
+      functionArguments: [address],
     };
   }
 

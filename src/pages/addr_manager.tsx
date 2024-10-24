@@ -1,6 +1,7 @@
 import { DAPP_ADDRESS, APTOS_FAUCET_URL, APTOS_NODE_URL, MODULE_URL } from '../config/constants';
 
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
+// import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import { useAptosWallet } from '@razorlabs/wallet-kit';
 import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
 import { useState } from "react";
 import React from "react";
@@ -16,6 +17,7 @@ import { CodeBlock } from "../components/CodeBlock";
 import newAxios from "../utils/axios_utils";
 
 import Select from 'react-select';
+import { InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
 
 // import { TypeTagVector } from "@martiandao/aptos-web3-bip44.js/dist/aptos_types";
 // import {TypeTagParser} from "@martiandao/aptos-web3-bip44.js/dist/transaction_builder/builder_utils";
@@ -28,7 +30,7 @@ export default function Home() {
 
   const [selectedOption, setSelectedOption] = useState({ value: 'all', label: 'all' });
 
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { account, signAndSubmitTransaction } = useAptosWallet();
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   const [resource, setResource] = React.useState<MoveResource>();
   const [resource_v2, setResourceV2] = React.useState();
@@ -53,24 +55,24 @@ export default function Home() {
   });
 
   async function init_did() {
-    await signAndSubmitTransaction(
-      do_init_did(),
-      { gas_unit_price: 100 }
-    );
+    await signAndSubmitTransaction({
+      payload: do_init_did() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
+    });
   }
 
   async function create_addr() {
-    await signAndSubmitTransaction(
-      add_addr(),
-      { gas_unit_price: 100 }
-    );
+    await signAndSubmitTransaction({
+      payload: add_addr() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
+    });
   }
 
   async function del_addr() {
-    await signAndSubmitTransaction(
-      delete_addr(),
-      { gas_unit_price: 100 }
-    );
+    await signAndSubmitTransaction({
+      payload: delete_addr() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
+    });
   }
 
   async function get_resources() {
@@ -130,8 +132,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::init::init",
-      type_arguments: [],
-      arguments: [
+      typeArguments: [],
+      functionArguments: [
         0,
         description
       ],
@@ -143,8 +145,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::addr_aggregator::add_addr",
-      type_arguments: [],
-      arguments: [
+      typeArguments: [],
+      functionArguments: [
         addr_type,
         addr,
         pubkey,
@@ -161,8 +163,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::addr_aggregator::delete_addr",
-      type_arguments: [],
-      arguments: [
+      typeArguments: [],
+      functionArguments: [
         addr,
       ],
     };
