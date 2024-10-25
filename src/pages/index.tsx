@@ -4,7 +4,8 @@ import {
   APTOS_NODE_URL,
   MODULE_URL,
 } from "../config/constants";
-import { useWallet } from "@manahippo/aptos-wallet-adapter";
+// import { useWallet } from "@manahippo/aptos-wallet-adapter";
+import { useAptosWallet } from '@razorlabs/wallet-kit';
 import { MoveResource } from "@martiandao/aptos-web3-bip44.js/dist/generated";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -13,7 +14,8 @@ import {
   WalletClient,
   HexString,
 } from "@martiandao/aptos-web3-bip44.js";
-import Image from "next/image";
+import Image from 'next/image';
+import { InputGenerateTransactionPayloadData } from "@aptos-labs/ts-sdk";
 
 // import { CodeBlock } from "../components/CodeBlock";
 
@@ -23,7 +25,7 @@ export default function Home() {
   const [hasAddrAggregator, setHasAddrAggregator] =
     React.useState<boolean>(false);
   const [services, setServices] = React.useState<Array<any>>([]);
-  const { account, signAndSubmitTransaction } = useWallet();
+  const { account, signAndSubmitTransaction } = useAptosWallet();
   // TODO: refresh page after disconnect.
   const client = new WalletClient(APTOS_NODE_URL, APTOS_FAUCET_URL);
   // const [resource, setResource] = React.useState<MoveResource>();
@@ -54,8 +56,9 @@ export default function Home() {
   }, []);
 
   async function add_service() {
-    await signAndSubmitTransaction(do_add_service(), {
-      gas_unit_price: 100,
+    await signAndSubmitTransaction({
+      payload: do_add_service() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
     }).then(() => {
       // updated it
       setTimeout(get_services, 3000);
@@ -67,14 +70,15 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::service_aggregator::add_service",
-      type_arguments: [],
-      arguments: [name, description, url, verification_url, "", expired_at],
+      typeArguments: [],
+      functionArguments: [name, description, url, verification_url, "", expired_at],
     };
   }
 
   async function update_service() {
-    await signAndSubmitTransaction(do_update_service(), {
-      gas_unit_price: 100,
+    await signAndSubmitTransaction({
+      payload: do_update_service() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
     }).then(() => {
       // updated it
       setTimeout(get_services, 3000);
@@ -86,14 +90,15 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::service_aggregator::update_service",
-      type_arguments: [],
-      arguments: [name, description, url, verification_url, "", expired_at],
+      typeArguments: [],
+      functionArguments: [name, description, url, verification_url, "", expired_at],
     };
   }
 
   async function delete_service() {
-    await signAndSubmitTransaction(do_delete_service(), {
-      gas_unit_price: 100,
+    await signAndSubmitTransaction({
+      payload: do_delete_service() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
     }).then(() => {
       // updated it
       setTimeout(get_services, 3000);
@@ -105,8 +110,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::service_aggregator::delete_service",
-      type_arguments: [],
-      arguments: [name],
+      typeArguments: [],
+      functionArguments: [name],
     };
   }
 
@@ -225,9 +230,11 @@ export default function Home() {
   }, [services]);
 
   async function init_did() {
-    await signAndSubmitTransaction(do_init_did(), { gas_unit_price: 100 }).then(
-      () => {
-        setTimeout(get_services, 3000);
+    await signAndSubmitTransaction({
+      payload: do_init_did() as InputGenerateTransactionPayloadData,
+      gasUnitPrice: 100,
+    }).then(() => {
+      setTimeout(get_services, 3000);
       }
     );
   }
@@ -245,8 +252,8 @@ export default function Home() {
     return {
       type: "entry_function_payload",
       function: DAPP_ADDRESS + "::init::init",
-      type_arguments: [],
-      arguments: [0, description],
+      typeArguments: [],
+      functionArguments: [0, description],
     };
   }
 

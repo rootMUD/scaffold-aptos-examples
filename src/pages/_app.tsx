@@ -4,26 +4,31 @@ import "../styles/select-input.css";
 import { NavBar } from "../components/NavBar";
 import type { AppProps } from "next/app";
 import { useMemo, useState } from "react";
-import {
-  PontemWalletAdapter,
-  WalletProvider,
-  AptosWalletAdapter,
-} from "@manahippo/aptos-wallet-adapter";
+// import {
+//   PontemWalletAdapter,
+//   WalletProvider,
+//   AptosWalletAdapter,
+// } from "@manahippo/aptos-wallet-adapter";
 
-// import { useAptosWallet } from '@razorlabs/wallet-kit';
-// import '@razorlabs/wallet-kit/style.css';
+// import {
+//   PontemWalletAdapter,
+//   WalletProvider,
+//   AptosWalletAdapter,
+// } from "@manahippo/aptos-wallet-adapter";
+import { AptosWalletProvider, useAptosWallet } from '@razorlabs/wallet-kit';
+import '@razorlabs/wallet-kit/style.css';
 import { ModalContext, ModalState } from "../components/ModalContext";
 function WalletSelector({ Component, pageProps }: AppProps) {
   const [modalState, setModalState] = useState<ModalState>({
     walletModal: false,
   });
-  const wallets = useMemo(
-    () => [
-      new AptosWalletAdapter(),
-      new PontemWalletAdapter(),
-    ],
-    []
-  );
+  // const wallets = useMemo(
+  //   () => [
+  //     new AptosWalletAdapter(),
+  //     new PontemWalletAdapter(),
+  //   ],
+  //   []
+  // );
   const modals = useMemo(
     () => ({
       modalState,
@@ -35,14 +40,14 @@ function WalletSelector({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <WalletProvider wallets={wallets} autoConnect={false}>
-      <ModalContext.Provider value={modals}>
+    <AptosWalletProvider autoConnect={false}>
+      {/* <ModalContext.Provider value={modals}> */}
         <div className="px-8">
           <NavBar />
           <Component {...pageProps} className="bg-base-300" />
         </div>
-      </ModalContext.Provider>
-    </WalletProvider>
+      {/* </ModalContext.Provider> */}
+    </AptosWalletProvider>
   );
 }
 
