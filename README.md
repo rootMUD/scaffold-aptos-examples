@@ -1,4 +1,4 @@
-# Examples of Aptos dApp Scaffold
+# Examples of Movement/Aptos dApp Scaffold
 
 A aptos application scaffold based on next.js Tailwind.
 
